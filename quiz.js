@@ -1,4 +1,5 @@
-const quiz = [
+console.log("quiz.js chargé");
+const questions = [
         {
         question: "Quels articles prévoient la légitime défense et la présomption de légitime défense ?",
         options: {
@@ -491,6 +492,11 @@ const quiz = [
     // Ajoute les autres questions ici...
 ];
 
+let currentQuestionIndex = 0;
+let score = 0;
+let timer;
+let timeLeft = 45;
+
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -498,3 +504,77 @@ function shuffle(array) {
     }
     return array;
 }
+
+function startQuiz() {
+    console.log("Quiz démarré");
+    shuffle(questions); // Mélange les questions
+    showQuestion();
+    startTimer();
+}
+
+function showQuestion() {
+    const questionContainer = document.getElementById('questionContainer');
+    const question = questions[currentQuestionIndex];
+    questionContainer.innerHTML = `
+        <p>${question.question}</p>
+        ${Object.keys(question.options).map(key => `
+            <button class="option" onclick="selectOption('${key}')">${question.options[key]}</button>
+        `).join('')}
+    `;
+}
+
+function selectOption(selectedKey) {
+    const options = document.querySelectorAll('.option');
+    options.forEach(option => {
+        option.classList.remove('selected');
+    });
+    const selectedOption = Array.from(options).find(option => option.textContent === questions[currentQuestionIndex].options[selectedKey]);
+    selectedOption.classList.add('selected');
+    selectedOption.dataset.selected = selectedKey;
+}
+
+function submitAnswer() {
+    clearInterval(timer);
+    const selectedOption = document.querySelector('.option.selected');
+    const question = questions[currentQuestionIndex];
+    const correctionDiv = document.createElement('div');
+    correctionDiv.id = 'correction';
+    
+    if (selectedOption && selectedOption.dataset.selected === question.correct) {
+        score++;
+        correctionDiv.innerHTML = `<p>Bonne réponse !</p>`;
+    } else {
+        correctionDiv.innerHTML = `<p>Mauvaise réponse, il s'agissait de la réponse ${question.correct}. ${question.options[question.correct]}</p>`;
+    }
+
+    document.getElementById('questionContainer').appendChild(correctionDiv);
+    document.getElementById('submitButton').disabled = true;
+
+    setTimeout(() => {
+        document.getElementById('correction').remove();
+        document.getElementById('submitButton').disabled = false;
+        nextQuestion();
+    }, 3000); // Affiche la correction pendant 3 secondes avant de passer à la question suivante
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        showQuestion();
+        startTimer();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    const resultDiv = document.getElementById('result');
+    const quizContainer = document.getElementById('quizContainer');
+    const totalQuestions = questions.length;
+    const note = (score / totalQuestions) * 20;
+    quizContainer.style.display = 'none';
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = `Votre score est : ${score}/${totalQuestions}<br>Votre note est : ${note}/20`;
+}
+
+window.onload = startQuiz;
