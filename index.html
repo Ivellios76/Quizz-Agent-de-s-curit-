@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Sécurité</title>
+    <title>Quizz Agent de sécurité 1</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Quiz de Sécurité</h1>
-        <div id="quiz-container"></div>
-        <div id="timer"></div>
-        <button id="next-button">Suivant</button>
+    <div id="quizContainer">
+        <h1>Quizz Agent de sécurité 1</h1>
+        <div id="questionContainer"></div>
+        <button id="submitButton" onclick="submitAnswer()">Soumettre</button>
+        <div id="time"></div>
     </div>
-    <script src="quiz.js"></script>
-    <script src="main.js"></script>
+    <div id="result" style="display: none;"></div>
+    <script src="quiz.js" defer></script>
 </body>
 </html>
