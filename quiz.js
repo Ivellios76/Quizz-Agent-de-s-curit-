@@ -523,6 +523,19 @@ function showQuestion() {
     `;
 }
 
+function startTimer() {
+    timeLeft = 45;
+    document.getElementById('time').innerText = timeLeft;
+    timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('time').innerText = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            nextQuestion();
+        }
+    }, 1000);
+}
+
 function selectOption(selectedKey) {
     const options = document.querySelectorAll('.option');
     options.forEach(option => {
